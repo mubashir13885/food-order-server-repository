@@ -1,28 +1,29 @@
-const jwt = require('jsonwebtoken')
-
+const jwt =require('jsonwebtoken')
 const userModel = require('../model/userModel')
 
 module.exports = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization
-
-        console.log(authHeader, "header");
-
+        
+        console.log(authHeader, "auth header");
+       
 
         const authToken = authHeader && authHeader.split(" ")[1];
-        // if there is no tocken
-        if (!authToken) return res.json({ status: false, message: "no auth token" });
+        if (!authHeader)
+            return res.status(401).json({ message: 'You are not logged in!' })
 
-        //decording the token
-        const decoded = jwt.verify(authToken, process.env.JWT_SECRETE_KEY)
-        //checking whether the user is exist or not
+        const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+
         const user = await userModel.findOne({ _id: decoded.id })
-        if (!user) return res.json({ status: false, message: "User not Found" })
 
-        req.user = decoded.id
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
 
-        next()
+        req.user = user;
+        next();
     } catch (error) {
-        return res.json({ loginfail: true, status: false, message: "Please Login" })
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }

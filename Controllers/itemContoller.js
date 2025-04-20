@@ -7,17 +7,13 @@ const uploadToCloudinary = require("../utilities/imageUpload");
 const create = async (req, res) => {
     try {
         console.log(req.body);
-        const { item_name, description, price,restaurant } = req.body
+        const { item_name, description, price} = req.body
 
-        if (!item_name || !description || !price || !restaurant) {
+        if (!item_name || !description || !price) {
             return res.status(400).json({ error: "All fields are required" })
         }
 
-        const existingRestaurant = await restaurantModel.findById(restaurant);
-        if (!existingRestaurant) {
-            return res.status(404).json({ error: "Restaurant not found" });
-        }
-
+      
 
         if (!req.file) {
             return res.status(400).json({ error: 'image not found' })
@@ -26,7 +22,7 @@ const create = async (req, res) => {
         const cloudinaryRes = await uploadToCloudinary(req.file.path)
 
         const newItem = new itemDb({
-            item_name, description, price ,restaurant, image: cloudinaryRes
+            item_name, description, price , image: cloudinaryRes
         })
 
         let savedItem = await newItem.save()

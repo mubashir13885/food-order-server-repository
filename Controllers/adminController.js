@@ -1,5 +1,6 @@
 const adminModel = require("../model/adminModel");
-const generateToken = require("../utilities/generateToken");
+const generateAdminToken = require("../utilities/generateAdminToken");
+
 const bcrypt = require('bcrypt')
 
 
@@ -20,7 +21,7 @@ const  register = async (req,res)=>{
 
         const newadmin = new adminModel({email,password:hashedPAssword})
        const savedAdmin= await newadmin.save()
-       const Admin_token = generateToken(savedAdmin._id)
+       const Admin_token = generateAdminToken(savedAdmin._id)
        res.cookie("Admin_token",Admin_token)
         res.status(201).json({message:"Registration successfull",savedAdmin})
     } catch (error) {
@@ -40,17 +41,17 @@ const login = async (req,res)=>{
         if(!email || !password){
             return res.status(400).json("All feilds are required")
         }
-        const existUser = await adminModel.findOne({email})
-        if(!existUser){
+        const userExist = await adminModel.findOne({email})
+        if(!userExist){
             return res.status(400).json("user does not exist")
         }
-       const passwordMatch = await bcrypt.compare(password,existUser.password)
+       const passwordMatch = await bcrypt.compare(password,userExist.password)
        console.log(passwordMatch,"passwordMatch");
 
        if(!passwordMatch){
         return res.status(400).json("password does not match")
     }
-    const Admin_token = generateToken(existUser._id)
+    const Admin_token = generateAdminToken(userExist._id)
 
     res.cookie("Admin_token",Admin_token)
 

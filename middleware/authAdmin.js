@@ -13,7 +13,7 @@ const authAdmin = (req, res, next) => {
             return res.status(401).json({ error: "Admin not authorized" })
         }
 
-        if (verifiedToken.role == "admin") {
+        if (verifiedToken.role !== "admin") {
             return res.status(401).json({ error: "Access denied" })
         }
 

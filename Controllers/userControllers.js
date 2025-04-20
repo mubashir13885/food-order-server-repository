@@ -22,6 +22,7 @@ const  register = async (req,res)=>{
         const token = generateToken(savedUser._id)
         res.cookie("token",token)
          res.status(201).json({message:"Registration successfull",savedUser})
+         
      } catch (error) {
         console.log(error);
         if(error.code == 11000){
@@ -50,11 +51,14 @@ const login = async (req,res)=>{
        if(!passwordMatch){
         return res.status(400).json("password does not match")
     }
+    const userObject = existUser.toObject()
+    delete userObject.password
+
     const token = generateToken(existUser._id)
 
-    res.cookie("token",token)
-
-    res.status(201).json({message:"login successfill"})
+    return res.status(201).json({message:"login successfill",userObject,token})
+   
+    
     } catch (error) {
         console.log(error);
          res.status(error.status || 500).json({error: error.message || "internel server error"})
