@@ -8,15 +8,20 @@ const adminRouter = require('./routes/adminRoutes')
 const itemRouter = require('./routes/itemRoutes')
 const cartRouter = require('./routes/cartRoutes')
 const cors =require('cors')
+const paymentRouter = require('./routes/paymetRoutes')
 
 
 
 const app=express()
 
+app.get("/", (req, res) => {
+    res.json("Server started")
+})
+
 connectDb()
 
 app.use(cors({
-origin:"http://localhost:5173"
+origin:(process.env.FRONTENT_URL)
 }))
 app.use(express.json())
 app.use(cookieParser())
@@ -27,6 +32,7 @@ app.use("/admin",adminRouter)
 app.use("/restaurant",restoRoter)
 app.use("/menu",itemRouter)
 app.use("/cart",cartRouter)
+app.use("/payment",paymentRouter)
 
 
 app.listen(process.env.PORT,()=>{

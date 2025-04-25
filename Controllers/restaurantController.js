@@ -44,9 +44,9 @@ const listRestaurant = async (req, res) => {
 }
 const restaurantDetails = async (req, res) => {
     try {
-        const { restaurantId } = req.params;
+        const {_id} = req.params;
 
-        const restoDetails = await restaurantModel.findById(restaurantId)
+        const restoDetails = await restaurantModel.findOne(_id)
         if (!restoDetails) {
             return res.status(400).json({ error: "Restaurant not found" })
         }

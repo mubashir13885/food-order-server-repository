@@ -1,5 +1,6 @@
 const { create, listRestaurant, restaurantDetails, updateDetails, deleteRestaurant } = require('../Controllers/restaurantController')
 const authAdmin = require('../middleware/authAdmin')
+const authMiddleware = require('../middleware/authMiddleware')
 const upload = require('../middleware/multer')
 
 const restoRoter = require('express').Router()

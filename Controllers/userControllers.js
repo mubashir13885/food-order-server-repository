@@ -37,11 +37,14 @@ const  register = async (req,res)=>{
 
 const login = async (req,res)=>{
     try {
-        const {email,password} = req.body
+        const {role}=req.query
+        console.log(role,"role");
+        
+        const {email,password,} = req.body
         if(!email || !password){
             return res.status(400).json("All feilds are required")
         }
-        const existUser = await userModel.findOne({email})
+        const existUser = await userModel.findOne({email , role})
         if(!existUser){
             return res.status(400).json("user does not exist")
         }
@@ -104,7 +107,7 @@ const userDelete = async (req,res)=>{
 const userLogout = (req,res)=>{
     try {
         res.clearCookie("token")
-        res.status(200).json({error:"User Logout"})
+        res.status(200).json({message:"User Logedout"})
     } catch (error) {
         console.log(error);
         
